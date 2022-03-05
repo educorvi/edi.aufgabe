@@ -113,6 +113,8 @@ class AufgabeView(WTFormView):
                               title=uploadname,
                               file = upload,
                               container = obj)
+            if self.form.public.data == 'public':
+                ploneapi.content.transition(obj, transition='publish_internally')
             url = self.context.absolute_url()
             ploneapi.portal.show_message(message='Ihre Lösung wurde in Ihrem Ordner gespeichert.', request=self.request, type='info')
             return self.request.response.redirect(url)
