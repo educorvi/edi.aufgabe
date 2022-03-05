@@ -7,6 +7,14 @@
   -*- extra stuff goes here -*-
 
   <browser:page
+    name="meine-aufgabe-view"
+    for="Products.CMFCore.interfaces.IFolderish"
+    class=".meine_aufgabe_view.MeineAufgabeView"
+    template="meine_aufgabe_view.pt"
+    permission="zope2.View"
+    />
+
+  <browser:page
     name="aufgabe-view"
     for="Products.CMFCore.interfaces.IFolderish"
     class=".aufgabe_view.AufgabeView"
