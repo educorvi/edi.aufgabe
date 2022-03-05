@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from wtforms import Form, TextField
+from wtforms import Form
+from wtforms.fields import TextAreaField, MultipleFileField
 from wtforms.validators import InputRequired
 from collective.wtforms.views import WTFormView
 from wtforms.fields import MultipleFileField
@@ -8,12 +9,12 @@ from plone import api as ploneapi
 from plone.app.textfield.value import RichTextValue
 
 class SolutionForm(Form):
-    text = TextAreaField("Beschreibung der Lösung" [InputRequired()])
+    text = TextAreaField("Beschreibung der Lösung", [InputRequired()])
     files = MultipleFileField("Upload von Dateien")
 
 
 class AufgabeView(WTFormView):
-    formClass = MyForm
+    formClass = SolutionForm
     buttons = ('Speichern', 'Abbrechen')
 
     def __call__(self):
@@ -24,9 +25,15 @@ class AufgabeView(WTFormView):
         if not ploneapi.user.is_anonymous():
             self.authenticated = True
             self.current = ploneapi.user.get_current()
-            self.homefolder = membership.getHomeFolder(current.getId())
+            self.homefolder = membership.getHomeFolder(self.current.getId())
         self.solution = self.get_solution()
         self.groupsolutions = self.get_group_solutions()
+        if self.submitted:
+            button = self.hasButtonSubmitted()
+            if button:
+                result = self.submit(button)
+                if result:
+                    return result
         return self.index()
 
     def get_solution(self):
@@ -36,6 +43,7 @@ class AufgabeView(WTFormView):
         meineaufgabe_id = f'meine_aufgabe_{aufgabeuid}' 
         if meineaufgabe_id in self.homefolder:
             solution = {}
+            import pdb;pdb.set_trace()
             meineaufgabe = self.homefolder[meineaufgabe_id]
             if meineaufgabe.text:
                 solution['text'] = meineaufgabe.text.output
@@ -69,7 +77,7 @@ class AufgabeView(WTFormView):
                 if meineaufgabe.text:
                     group_entry['text'] = meineaufgabe.text.output
                 group_entry['files'] = []
-                for fileentry = meineaufgabe.getFolderContents()
+                for fileentry in meineaufgabe.getFolderContents():
                     file_entry = {}
                     if fileentry.portal_type == 'File':
                         file_entry['title'] = fileentry.Title
@@ -81,18 +89,20 @@ class AufgabeView(WTFormView):
 
     def submit(self, button):
         if button == 'Speichern' and self.validate():
-             if not self.homefolder:
-                 message = 
-                 return
-             aufgabeuid = self.context.UID()
-             meineaufgabe_id = f'meine_aufgabe_{aufgabeuid}'
-             richtext = RichTextValue(raw=self.form.text.data,
-                          mimeType='text/plain',
-                          outputMimeType='text/html',
-                          encoding='utf-8')
-             obj = ploneapi.content.create(
-                      type='MeineAufgabe',
-                      id = meineaufgabe_id,
-                      title=self.context.title,
-                      container=self.homefolder)
-             import pdb;pdb.set_trace()
+            if not self.homefolder:
+                print('test')
+                #message = 
+                #return
+            aufgabeuid = self.context.UID()
+            meineaufgabe_id = f'meine_aufgabe_{aufgabeuid}'
+            richtext = RichTextValue(raw=self.form.text.data,
+                         mimeType='text/plain',
+                         outputMimeType='text/html',
+                         encoding='utf-8')
+            obj = ploneapi.content.create(
+                     type='MeineAufgabe',
+                     id = meineaufgabe_id,
+                     title=self.context.title,
+                     text = richtext,
+                     container=self.homefolder)
+            import pdb;pdb.set_trace()
