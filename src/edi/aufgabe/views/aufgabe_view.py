@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
 import magic
 from wtforms import Form
-from wtforms.fields import TextAreaField, MultipleFileField
+from wtforms.fields import TextAreaField, MultipleFileField, RadioField
 from wtforms.validators import InputRequired
 from collective.wtforms.views import WTFormView
-from wtforms.fields import MultipleFileField
 from plone import api as ploneapi
+from plone.namedfile.file import NamedBlobFile
 from plone.app.textfield.value import RichTextValue
 
 class SolutionForm(Form):
     text = TextAreaField("Beschreibung der Lösung", [InputRequired()], render_kw={'class':'form-control'})
+    public = RadioField("Wie soll die Lösung gespeichert werden?", choices=[('private','privat'), ('public','öffentlich')], default='private')
     files = MultipleFileField("Upload von Dateien", render_kw={'class':'form-control'})
 
 
@@ -105,11 +106,12 @@ class AufgabeView(WTFormView):
                 mime = magic.Magic(mime=True)
                 content_type = mime.from_buffer(file.file.read())
                 file.file.seek(0)
+                uploadname = file.filename
+                upload = NamedBlobFile(data=file.file.read(), contentType=content_type, filename=uploadname)
                 newfile = ploneapi.content.create(
                               type="File",
-                              title=file.filename,
-                              contentType=content_type,
-                              data=file.file.read(),
+                              title=uploadname,
+                              file = upload,
                               container = obj)
             url = self.context.absolute_url()
             ploneapi.portal.show_message(message='Ihre Lösung wurde in Ihrem Ordner gespeichert.', request=self.request, type='info')
