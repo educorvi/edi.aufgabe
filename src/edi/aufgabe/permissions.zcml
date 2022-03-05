@@ -7,6 +7,12 @@
   <!-- -*- extra stuff goes here -*- -->
 
     <permission
+        id="edi.aufgabe.AddMeineAufgabe"
+        title="edi.aufgabe: Add MeineAufgabe"
+    />
+
+
+    <permission
         id="edi.aufgabe.AddAufgabe"
         title="edi.aufgabe: Add Aufgabe"
     />
