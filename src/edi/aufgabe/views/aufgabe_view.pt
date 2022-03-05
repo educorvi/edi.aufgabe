@@ -1,13 +1,53 @@
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:metal="http://xml.zope.org/namespaces/metal"
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
       xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
       xmlns:i18n="http://xml.zope.org/namespaces/i18n"
-      i18n:domain="edi.aufgabe"
-      metal:use-macro="context/main_template/macros/master">
+      lang="en"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="example.conference">
 <body>
-  <metal:block fill-slot="content-core">
-      <h2 i18n:translate="">Sample View</h2>
-      <p tal:content="view/msg">this gets replaced</p>
-  </metal:block>
+
+<metal:main fill-slot="main">
+  <tal:main-macro metal:define-macro="main">
+    <div class="container">
+
+      <div class="row">
+        <span class="col-12" tal:content="structure provider:plone.abovecontenttitle" />
+      </div>
+
+      <div class="row">
+
+        <div class="col-lg-9 col-12">
+
+          <h1 tal:content="context/title" />
+          <div tal:replace="structure provider:plone.belowcontenttitle" />
+          <p tal:condition="context/description" class="lead mt-5">
+            <img class="icon" src="++theme++plonetheme.siguv/icons/siguv/dot.svg">
+            <span tal:content="context/description"/>
+          </p>
+
+          <div tal:replace="structure provider:plone.abovecontentbody" />
+
+          <div tal:condition="context/text" tal:content="structure context/text/output" />
+
+          <div tal:replace="structure provider:plone.belowcontentbody" />
+
+          <form tal:condition="python:view.homefolder and not view.solution" tal:replace="structure view/renderForm" />
+    
+        </div>
+
+	<!-- Portlets/Cards vorhanden / Portlet-Spalte -->
+        <div class="col-lg-3 col-12">
+          <div tal:replace="structure context/@@portlet-cards-view"/>
+        </div>
+        <!-- Ende Portlets/Cards vorhanden / Portlet-Spalte -->
+
+      </div>
+
+    </div>
+
+  </tal:main-macro>
+</metal:main>
+
 </body>
 </html>
