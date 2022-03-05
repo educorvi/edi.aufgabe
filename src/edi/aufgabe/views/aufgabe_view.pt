@@ -36,9 +36,11 @@
 
 	  <section tal:define="solution view/solution" tal:condition="view/solution" class="my-solution">
 	    <span tal:condition="solution/text" tal:replace="structure solution/text" />
+            <span tal:condition="solution/files">		    
             <h3>Dateien</h3>
 	    <p class="small" tal:repeat="file solution/files"><i class="bi bi-download"></i>
 	      <a tal:attributes="href file/url" tal:content="file/title"></a></p>
+	    </span>
           </section>		    
 
     

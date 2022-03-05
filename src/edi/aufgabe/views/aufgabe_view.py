@@ -48,15 +48,14 @@ class AufgabeView(WTFormView):
             if meineaufgabe.text:
                 solution['text'] = meineaufgabe.text.output
             brains = meineaufgabe.getFolderContents()
-            if brains:
-                solution['files'] = []
-                for i in brains:
-                    fileentry = {}
-                    if i.portal_type == 'File':
-                        fileobj = i.getObject()
-                        fileentry['title'] = fileobj.title
-                        fileentry['url'] = '%s/@@download/file/%s' %(fileobj.absolute_url(), fileobj.file.filename)
-                        solution['files'].append(fileentry)
+            solution['files'] = []
+            for i in brains:
+                fileentry = {}
+                if i.portal_type == 'File':
+                    fileobj = i.getObject()
+                    fileentry['title'] = fileobj.title
+                    fileentry['url'] = '%s/@@download/file/%s' %(fileobj.absolute_url(), fileobj.file.filename)
+                    solution['files'].append(fileentry)
             return solution
         return
 
@@ -105,14 +104,15 @@ class AufgabeView(WTFormView):
             for file in self.form.files.data:
                 mime = magic.Magic(mime=True)
                 content_type = mime.from_buffer(file.file.read())
-                file.file.seek(0)
-                uploadname = file.filename
-                upload = NamedBlobFile(data=file.file.read(), contentType=content_type, filename=uploadname)
-                newfile = ploneapi.content.create(
-                              type="File",
-                              title=uploadname,
-                              file = upload,
-                              container = obj)
+                if content_type != 'application/x-empty':
+                    file.file.seek(0)
+                    uploadname = file.filename
+                    upload = NamedBlobFile(data=file.file.read(), contentType=content_type, filename=uploadname)
+                    newfile = ploneapi.content.create(
+                                  type="File",
+                                  title=uploadname,
+                                  file = upload,
+                                  container = obj)
             if self.form.public.data == 'public':
                 ploneapi.content.transition(obj, transition='publish_internally')
             url = self.context.absolute_url()
