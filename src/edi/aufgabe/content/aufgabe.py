@@ -12,7 +12,7 @@ from edi.aufgabe import _
 class IAufgabe(model.Schema):
     """ Marker interface and Dexterity Python Schema for Aufgabe
     """
-    text = RichText(title="Text der Lösung")
+    text = RichText(title="Beschreibung der Aufgabe")
 
 
 @implementer(IAufgabe)

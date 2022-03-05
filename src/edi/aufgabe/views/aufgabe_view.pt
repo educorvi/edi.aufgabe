@@ -30,10 +30,16 @@
 
           <div tal:condition="context/text" tal:content="structure context/text/output" />
 
-          <div tal:replace="structure provider:plone.belowcontentbody" />
-
+          <hr>
+	  <h2>Meine Lösung</h2>
           <form tal:condition="python:view.homefolder and not view.solution" tal:replace="structure view/renderForm" />
+
+	  <section tal:define="solution view/solution" tal:condition="view/solution" class="my-solution">
+	    <span tal:condition="solution/text" tal:replace="structure solution/text" />
+          </section>		    
+
     
+          <div tal:replace="structure provider:plone.belowcontentbody" />
         </div>
 
 	<!-- Portlets/Cards vorhanden / Portlet-Spalte -->

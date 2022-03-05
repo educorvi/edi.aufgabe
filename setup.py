@@ -55,6 +55,7 @@ setup(
         'plone.restapi',
         'plone.app.dexterity',
         'collective.wtforms',
+        'python-magic',
     ],
     extras_require={
         'test': [

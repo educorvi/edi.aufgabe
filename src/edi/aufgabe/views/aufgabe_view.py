@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+import magic
 from wtforms import Form
 from wtforms.fields import TextAreaField, MultipleFileField
 from wtforms.validators import InputRequired
@@ -9,8 +9,8 @@ from plone import api as ploneapi
 from plone.app.textfield.value import RichTextValue
 
 class SolutionForm(Form):
-    text = TextAreaField("Beschreibung der Lösung", [InputRequired()])
-    files = MultipleFileField("Upload von Dateien")
+    text = TextAreaField("Beschreibung der Lösung", [InputRequired()], render_kw={'class':'form-control'})
+    files = MultipleFileField("Upload von Dateien", render_kw={'class':'form-control'})
 
 
 class AufgabeView(WTFormView):
@@ -43,7 +43,6 @@ class AufgabeView(WTFormView):
         meineaufgabe_id = f'meine_aufgabe_{aufgabeuid}' 
         if meineaufgabe_id in self.homefolder:
             solution = {}
-            import pdb;pdb.set_trace()
             meineaufgabe = self.homefolder[meineaufgabe_id]
             if meineaufgabe.text:
                 solution['text'] = meineaufgabe.text.output
@@ -53,8 +52,9 @@ class AufgabeView(WTFormView):
                 for i in brains:
                     fileentry = {}
                     if i.portal_type == 'File':
-                        fileentry['title'] = i.Title
-                        fileentry['url'] = i.getURL()
+                        fileobj = i.getObject()
+                        fileentry['title'] = fileobj.title
+                        fileentry['url'] = '%s/@@download/file/%s' %(fileobj.absolute_url(), fileobj.file.filename)
                         solution['files'].append(fileentry)
             return solution
         return
@@ -89,10 +89,6 @@ class AufgabeView(WTFormView):
 
     def submit(self, button):
         if button == 'Speichern' and self.validate():
-            if not self.homefolder:
-                print('test')
-                #message = 
-                #return
             aufgabeuid = self.context.UID()
             meineaufgabe_id = f'meine_aufgabe_{aufgabeuid}'
             richtext = RichTextValue(raw=self.form.text.data,
@@ -105,4 +101,19 @@ class AufgabeView(WTFormView):
                      title=self.context.title,
                      text = richtext,
                      container=self.homefolder)
-            import pdb;pdb.set_trace()
+            for file in self.form.files.data:
+                mime = magic.Magic(mime=True)
+                content_type = mime.from_buffer(file.file.read())
+                file.file.seek(0)
+                newfile = ploneapi.content.create(
+                              type="File",
+                              title=file.filename,
+                              contentType=content_type,
+                              data=file.file.read(),
+                              container = obj)
+            url = self.context.absolute_url()
+            ploneapi.portal.show_message(message='Ihre Lösung wurde in Ihrem Ordner gespeichert.', request=self.request, type='info')
+            return self.request.response.redirect(url)
+        ploneapi.portal.show_message(message='Bearbeiten der Lösung abgebrochen.', request=self.request, type='info')
+        url = self.context.absolute_url()
+        return self.request.response.redirect(url)
