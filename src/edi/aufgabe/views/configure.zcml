@@ -16,7 +16,7 @@
 
   <browser:page
     name="aufgabe-view"
-    for="Products.CMFCore.interfaces.IFolderish"
+    for="edi.aufgabe.content.aufgabe.IAufgabe"
     class=".aufgabe_view.AufgabeView"
     template="aufgabe_view.pt"
     permission="zope2.View"
