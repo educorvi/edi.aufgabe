@@ -1,18 +1,17 @@
-.. This README is meant for consumption by humans and pypi. Pypi can render rst files so please do not use Sphinx features.
-   If you want to learn more about writing documentation, please check out: http://docs.plone.org/about/documentation_styleguide.html
-   This text does not appear on pypi or github. It is a comment.
+# edi.aufgabe
 
-===========
-edi.aufgabe
-===========
+Mit diesem Plone-Add-On können Aufgaben zu einem Standard-Plone-Ordner zu einem Crashkurs 
+(edi.crashkurs) oder zur einem Plone-Course (edi.plonecourse) hinzugefügt werden. Für die Lösung
+einer Aufgabe wird ein Artikel "MeineAufgabe" im persönlichen Ordner des Benutzers angelegt.
 
-Tell me what your product does
+## Leistungsmerkmale
 
-Features
---------
-
-- Can be bullet points
-
+- Beschreibung einer Aufgabe in Plone
+- für die Lösung der Aufgabe wird ein Artikel "MeineAufgabe" im persönlichen Ordner des Benutzers abgelegt
+- die Lösung wird im Kontext der Aufgabe anzeigt
+- die Bearbeitung der Aufgabe erfolgt im Kontext von "MeinOrdner"
+- die Benutzer können entscheiden, ob die eigene Lösung veröffentlicht (geteilt) werden soll
+- die öffentlichen Lösungen anderer Kursteilnehmer werden in einem Akkordeon unter der eigenen Lösung dargestellt.
 
 Examples
 --------
