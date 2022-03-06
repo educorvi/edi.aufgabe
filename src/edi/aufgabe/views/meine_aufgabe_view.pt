@@ -33,17 +33,15 @@
 
           <hr>
           <h2>Dateien</h2>
-	  <p class="small" tal:repeat="datei view/get_files">
-	    <a tal:attributes="href datei/absolute_url" tal:content="datei/title"/>
-	    <a title="bearbeiten" tal:attributes="href string:{datei/absolute_url}/edit"><i class="bi bi-pencil"></i></a>
-	    <a title="löschen" tal:attributes="href string:{datei/absolute_url}/delete_confirmation"><i class="bi bi-trash"></i></a>
-	  <p>  
+	  <p tal:repeat="file view/get_files">
+	    <a tal:attributes="href python:file.absolute_url()" tal:content="python:file.title"/>
+	    <a title="löschen" tal:attributes="href string:${file/absolute_url}/delete_confirmation"><i class="bi bi-trash"></i> Datei löschen</a>
+	  </p>  
 
           <form tal:replace="structure view/renderForm" />
 
-	  <a class="btn btn-success" role="button" tal:attributes="href view/get_aufgabe_url">Zurück zur Aufgabe</a> 
-
           <div tal:replace="structure provider:plone.belowcontentbody" />
+
         </div>
 
         <!-- Portlets/Cards vorhanden / Portlet-Spalte -->

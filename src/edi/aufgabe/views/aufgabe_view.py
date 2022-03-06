@@ -10,8 +10,8 @@ from plone.app.textfield.value import RichTextValue
 
 class SolutionForm(Form):
     text = TextAreaField("Beschreibung der Lösung", [InputRequired()], render_kw={'class':'form-control'})
-    public = RadioField("Wie soll die Lösung gespeichert werden?", choices=[('private','privat'), ('public','öffentlich')], default='private')
     files = MultipleFileField("Upload von Dateien", render_kw={'class':'form-control'})
+    public = RadioField("Wie soll die Lösung gespeichert werden?", choices=[('private','privat'), ('public','öffentlich')], default='private')
 
 
 class AufgabeView(WTFormView):

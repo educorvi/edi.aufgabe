@@ -9,13 +9,13 @@ from plone.namedfile.file import NamedBlobFile
 from plone.app.textfield.value import RichTextValue
 
 class SolutionForm(Form):
-    public = RadioField("Veröffentlichungsstatus der Lösung", choices=[('private','privat'), ('public','öffentlich')], default='private')
     files = MultipleFileField("Upload von Dateien", render_kw={'class':'form-control'})
+    public = RadioField("Veröffentlichungsstatus der Lösung", choices=[('private','privat'), ('public','öffentlich')], default='private')
 
 
 class MeineAufgabeView(WTFormView):
     formClass = SolutionForm
-    buttons = ('Speichern', 'Abbrechen')
+    buttons = ('Speichern', 'Zurück zur Aufgabe')
 
     def __call__(self):
         self.state = ploneapi.content.get_state(obj=self.context)
@@ -76,12 +76,11 @@ class MeineAufgabeView(WTFormView):
             if public == 'private':
                 if self.state == 'internally_published':
                     ploneapi.content.transition(self.context, transition='hide')
-            elif public == 'internally_published':
+            elif public == 'public':
                 if self.state == 'private':
-                    ploneapi.content.transition(obj, transition='publish_internally')
+                    ploneapi.content.transition(self.context, transition='publish_internally')
             url = self.context.absolute_url()
             ploneapi.portal.show_message(message='Ihre Lösung wurde in Ihrem Ordner gespeichert.', request=self.request, type='info')
             return self.request.response.redirect(url)
-        ploneapi.portal.show_message(message='Bearbeiten der Lösung abgebrochen.', request=self.request, type='info')
-        url = self.context.absolute_url()
+        url = self.get_aufgabe_url()
         return self.request.response.redirect(url)
