@@ -142,7 +142,8 @@ class AufgabeView(WTFormView):
                 container = ploneapi.content.create(
                         type="MeinKurs",
                         id = crashid,
-                        title = parent.title)
+                        title = parent.title,
+                        container = self.homefolder)
                 return container
             return self.homefolder[crashid]
         return self.homefolder
