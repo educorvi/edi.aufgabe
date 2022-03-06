@@ -47,14 +47,14 @@
   <description>Making an item private means that it will not be visible to anyone but the owner and the site administrator.</description>
   <action url="%(content_url)s/content_status_modify?workflow_action=hide" category="workflow" icon="">Make private</action>
   <guard>
-   <guard-permission>Modify portal content</guard-permission>
+   <guard-role>Owner</guard-role>
   </guard>
  </transition>
  <transition transition_id="publish_internally" title="Reviewer publishes content to internal users" new_state="internally_published" trigger="USER" before_script="" after_script="">
   <description>Publishing the item makes it visible to other users.</description>
   <action url="%(content_url)s/content_status_modify?workflow_action=publish_internally" category="workflow" icon="">Publish internally</action>
   <guard>
-   <guard-permission>Review portal content</guard-permission>
+   <guard-role>Owner</guard-role>
   </guard>
  </transition>
  <worklist worklist_id="reviewer_queue" title="">
