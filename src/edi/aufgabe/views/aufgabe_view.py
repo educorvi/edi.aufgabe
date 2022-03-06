@@ -72,6 +72,7 @@ class AufgabeView(WTFormView):
             meineaufgabe = brain.getObject()
             roles = ploneapi.user.get_roles(user=self.current, obj=meineaufgabe)
             if not 'Owner' in roles:
+                group_entry['id'] = 'edi-%s' % meineaufgabe.UID()
                 group_entry['title'] = meineaufgabe.getOwner().getProperty('fullname')
                 group_entry['url'] = meineaufgabe.absolute_url()
                 group_entry['text'] = ''

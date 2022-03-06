@@ -43,9 +43,39 @@
 	    </span>
 	    <a href="" tal:attributes="href view/get_meineaufgabe_url"><i class="bi bi-folder-symlink"></i>
 		    Meine Lösung in Mein Ordner bearbeiten</a>
-          </section>		    
+          </section>
 
-    
+	  <section class="mt-5" tal:condition="view/get_group_solutions">
+	  <hr>
+	  <h2>Lösungen anderer Kursteilnehmer</h2>
+
+
+          <div class="mt-5" id="accordeonAnsicht">
+            <div tal:repeat="solution view/get_group_solutions" class="card">
+	      <div class="card-header" id="headingOne">
+		<h2 class="mb-0">
+                  <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
+		    tal:attributes="data-target string:#${solution/id}; aria-controls solution/id">
+		    <span tal:replace="solution/title"/>
+                  </button>
+                </h2>
+	      </div>
+              <div class="collapse" aria-labelledby="headingOne" data-parent="#accordeonAnsicht" 
+		      tal:attributes="id solution/id" aria-expanded="false" style="">
+              <div class="card-body">
+                <span tal:replace="structure solution/text"/>
+		<span tal:condition="solution/files">		
+	          <p tal:condition="solution/files" class="strong">Dateien</p>
+		  <p class="small" tal:repeat="file solution/files"><i class="bi bi-download"></i>
+                    <a tal:attributes="href file/url" tal:content="file/title"></a></p>
+		</span>
+	      </div>
+	      </div>
+	    </div>
+	  </div>
+	  </section>
+
+
           <div tal:replace="structure provider:plone.belowcontentbody" />
         </div>
 
