@@ -41,6 +41,8 @@
 
           <form tal:replace="structure view/renderForm" />
 
+	  <a class="btn btn-success" role="button" tal:attributes="href view/get_aufgabe_url">Zurück zur Aufgabe</a> 
+
           <div tal:replace="structure provider:plone.belowcontentbody" />
         </div>
 
