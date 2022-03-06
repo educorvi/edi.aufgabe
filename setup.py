@@ -56,6 +56,7 @@ setup(
         'plone.app.dexterity',
         'collective.wtforms',
         'python-magic',
+        'collective.fieldedit',
     ],
     extras_require={
         'test': [

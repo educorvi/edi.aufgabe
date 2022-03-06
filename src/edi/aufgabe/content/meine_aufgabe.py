@@ -15,9 +15,6 @@ class IMeineAufgabe(model.Schema):
     """ Marker interface and Dexterity Python Schema for MeineAufgabe
     """
 
-    text = RichText(title="Text der Lösung")
-
-
 @implementer(IMeineAufgabe)
 class MeineAufgabe(Container):
     """

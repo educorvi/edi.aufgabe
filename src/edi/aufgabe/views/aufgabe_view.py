@@ -41,10 +41,11 @@ class AufgabeView(WTFormView):
         if not self.homefolder:
             return
         aufgabeuid = self.context.UID()
-        meineaufgabe_id = f'meine_aufgabe_{aufgabeuid}' 
-        if meineaufgabe_id in self.homefolder:
+        meineaufgabe_id = f'meine_aufgabe_{aufgabeuid}'
+        container = self.check_parent_container()
+        if meineaufgabe_id in container:
             solution = {}
-            meineaufgabe = self.homefolder[meineaufgabe_id]
+            meineaufgabe = container[meineaufgabe_id]
             if meineaufgabe.text:
                 solution['text'] = meineaufgabe.text.output
             brains = meineaufgabe.getFolderContents()
@@ -95,12 +96,13 @@ class AufgabeView(WTFormView):
                          mimeType='text/plain',
                          outputMimeType='text/html',
                          encoding='utf-8')
+            container = self.check_parent_container()
             obj = ploneapi.content.create(
                      type='MeineAufgabe',
                      id = meineaufgabe_id,
                      title=self.context.title,
                      text = richtext,
-                     container=self.homefolder)
+                     container=container)
             for file in self.form.files.data:
                 mime = magic.Magic(mime=True)
                 content_type = mime.from_buffer(file.file.read())
@@ -121,3 +123,33 @@ class AufgabeView(WTFormView):
         ploneapi.portal.show_message(message='Bearbeiten der Lösung abgebrochen.', request=self.request, type='info')
         url = self.context.absolute_url()
         return self.request.response.redirect(url)
+
+    def check_parent_container(self):
+        """Check ob die Aufgabe in einem Crashkurs liegt
+           wenn das der Fall ist:
+             check ob MeinKurs bereits in MeinOrdner liegt
+             wenn ja: Rückgabe von MeinKurs
+             wenn nein: Anlegen von MeinKurs und Rückgabe
+           wenn nicht:
+             Rückgabe des Homefolders
+        """
+        parent = self.context.aq_parent
+        if parent.portal_type == 'CrashKurs':
+            crashuid = parent.UID()
+            crashid = f'mein_kurs_{crashuid}'
+            if not crashid in self.homefolder:
+                container = ploneapi.content.create(
+                        type="MeinKurs",
+                        id = crashid,
+                        title = parent.title)
+                return container
+            return self.homefolder[crashid]
+        return self.homefolder
+
+    def get_meineaufgabe_url(self):
+        aufgabeuid = self.context.UID()
+        meineaufgabe_id = f'meine_aufgabe_{aufgabeuid}'
+        container = self.check_parent_container()
+        meineaufgabe = container[meineaufgabe_id]
+        url = meineaufgabe.absolute_url()
+        return url
