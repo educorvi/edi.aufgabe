@@ -12,6 +12,7 @@ from edi.aufgabe import _
 class IAufgabe(model.Schema):
     """ Marker interface and Dexterity Python Schema for Aufgabe
     """
+    share = schema.Bool(title="Lernende dürfen die Lösungen anderer Kursteilnehmer erst sehen, wenn die eigene Lösung ebenfalls veröffentlicht  wurde.") 
 
 @implementer(IAufgabe)
 class Aufgabe(Container):

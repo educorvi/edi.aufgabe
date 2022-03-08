@@ -66,9 +66,26 @@ class AufgabeView(WTFormView):
             return solution
         return
 
+    def check_share(self):
+        if not self.context.share:
+            return True
+        if not self.homefolder:
+            return False
+        container = self.check_parent_container()
+        aufgabeuid = self.context.UID()
+        meineaufgabe_id = f'meine_aufgabe_{aufgabeuid}'
+        meineaufgabe = getattr(container, meineaufgabe_id)
+        if meineaufgabe:
+            state = ploneapi.content.get_state(meineaufgabe)
+            if state == 'internally_published':
+                return True
+        return False
+
     def get_group_solutions(self):
         if not self.authenticated:
             return
+        if not self.check_share():
+            return []
         aufgabeuid = self.context.UID()
         meineaufgabe_id = f'meine_aufgabe_{aufgabeuid}'
         brains = ploneapi.content.find(portal_type='MeineAufgabe', id=meineaufgabe_id)
