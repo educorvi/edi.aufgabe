@@ -7,6 +7,8 @@ from collective.wtforms.views import WTFormView
 from plone import api as ploneapi
 from plone.namedfile.file import NamedBlobFile
 from plone.app.textfield.value import RichTextValue
+from plone.protect.interfaces import IDisableCSRFProtection
+from zope.interface import alsoProvides
 
 class SolutionForm(Form):
     files = MultipleFileField("Upload von Dateien", render_kw={'class':'form-control'})
@@ -18,6 +20,7 @@ class MeineAufgabeView(WTFormView):
     buttons = ('Speichern', 'Zurück zur Aufgabe')
 
     def __call__(self):
+        alsoProvides(self.request, IDisableCSRFProtection)
         self.state = ploneapi.content.get_state(obj=self.context)
         self.current = None
         self.homefolder = None

@@ -7,6 +7,8 @@ from collective.wtforms.views import WTFormView
 from plone import api as ploneapi
 from plone.namedfile.file import NamedBlobFile
 from plone.app.textfield.value import RichTextValue
+from plone.protect.interfaces import IDisableCSRFProtection
+from zope.interface import alsoProvides
 
 class SolutionForm(Form):
     text = TextAreaField("Beschreibung der Lösung", [InputRequired()], render_kw={'class':'form-control'})
@@ -19,6 +21,7 @@ class AufgabeView(WTFormView):
     buttons = ('Speichern', 'Abbrechen')
 
     def __call__(self):
+        alsoProvides(self.request, IDisableCSRFProtection)
         self.current = None
         self.homefolder = None
         self.authenticated = False
