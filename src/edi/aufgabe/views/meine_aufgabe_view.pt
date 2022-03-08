@@ -33,10 +33,19 @@
 
           <hr>
           <h2>Dateien</h2>
-	  <p tal:repeat="file view/get_files">
-	    <a tal:attributes="href python:file.absolute_url()" tal:content="python:file.title"/>
-	    <a title="löschen" tal:attributes="href string:${file/absolute_url}/delete_confirmation"><i class="bi bi-trash"></i> Datei löschen</a>
-	  </p>  
+	  <section id="files" class="mb-4">
+	    <p tal:repeat="file view/get_files">
+	      <div class="row">
+                <div class="col-8">		    
+	          <a tal:attributes="href python:file.absolute_url()" tal:content="python:file.title"/>
+                </div>
+	        <div class="col-4">
+                  <a title="löschen" tal:attributes="href string:${file/absolute_url}/delete_confirmation"><i class="bi bi-trash"></i> 
+			    <small>Datei löschen</small></a>
+	        </div>
+	      </div>
+	    </p>  
+	  </section>
 
           <form tal:replace="structure view/renderForm" />
 

@@ -12,7 +12,9 @@ from zope.interface import alsoProvides
 
 class SolutionForm(Form):
     files = MultipleFileField("Upload von Dateien", render_kw={'class':'form-control'})
-    public = RadioField("Veröffentlichungsstatus der Lösung", choices=[('private','privat'), ('public','öffentlich')], default='private')
+    public = RadioField("Veröffentlichungsstatus der Lösung", 
+            choices=[('private','privat'), ('public','öffentlich (für alle Kursteilnehmer sichtbar)')], 
+            default='private')
 
 
 class MeineAufgabeView(WTFormView):
