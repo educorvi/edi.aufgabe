@@ -74,7 +74,7 @@ class AufgabeView(WTFormView):
         container = self.check_parent_container()
         aufgabeuid = self.context.UID()
         meineaufgabe_id = f'meine_aufgabe_{aufgabeuid}'
-        meineaufgabe = getattr(container, meineaufgabe_id)
+        meineaufgabe = getattr(container, meineaufgabe_id, None)
         if meineaufgabe:
             state = ploneapi.content.get_state(meineaufgabe)
             if state == 'internally_published':
