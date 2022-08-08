@@ -150,7 +150,8 @@ class AufgabeView(WTFormView):
 
     def check_parent_container(self):
         """Check ob die Aufgabe in einem Crashkurs liegt
-           wenn das der Fall ist:
+           oder in einem Skill der wiederum in einem Crashkurs liegt.
+           Wenn das der Fall ist:
              check ob MeinKurs bereits in MeinOrdner liegt
              wenn ja: Rückgabe von MeinKurs
              wenn nein: Anlegen von MeinKurs und Rückgabe
@@ -162,14 +163,27 @@ class AufgabeView(WTFormView):
             crashuid = parent.UID()
             crashid = f'mein_kurs_{crashuid}'
             if not crashid in self.homefolder:
-                container = ploneapi.content.create(
-                        type="MeinKurs",
-                        id = crashid,
-                        title = parent.title,
-                        container = self.homefolder)
+                container = self.create_meinkurs(crashid, parent.title)
                 return container
             return self.homefolder[crashid]
+        elif parent.portal_type == 'Skill':
+            skillparent = parent.aq_parent
+            if skillparent.portal_type == 'CrashKurs':
+                crashuid = skillparent.UID()
+                crashid = f'mein_kurs_{crashuid}'
+                if not crashid in self.homefolder:
+                    container = self.create_meinkurs(crashid, skillparent.title)
+                    return container
+                return self.homefolder[crashid]
         return self.homefolder
+
+    def create_meinkurs(self, crashid, kurstitel):
+        container = ploneapi.content.create(
+            type="MeinKurs",
+            id = crashid,
+            title = kurstitel,
+            container = self.homefolder)
+        return container
 
     def get_meineaufgabe_url(self):
         aufgabeuid = self.context.UID()
